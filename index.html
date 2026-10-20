@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZUVO - Meet Strangers</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#08070c;
+  color:white;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 7%;
+  border-bottom:1px solid #292033;
+}
+.logo{
+  font-size:36px;
+  font-weight:900;
+  color:#a855f7;
+  letter-spacing:3px;
+}
+.badge{color:#c084fc}
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:70px 22px;
+  text-align:center;
+}
+h1{
+  font-size:clamp(42px,8vw,78px);
+  margin:10px 0;
+}
+h1 span{color:#b65cff}
+.subtitle{
+  color:#c4bdcf;
+  font-size:19px;
+  line-height:1.7;
+}
+.card{
+  max-width:750px;
+  margin:38px auto;
+  padding:28px;
+  border:1px solid #7738a8;
+  border-radius:22px;
+  background:linear-gradient(145deg,#17101f,#0c0a11);
+  box-shadow:0 0 35px #8125b522;
+}
+.video-box{
+  min-height:220px;
+  border:1px solid #493255;
+  border-radius:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#100d16;
+  color:#bda9cb;
+  padding:20px;
+  overflow:hidden;
+}
+video{width:100%;max-height:350px;object-fit:cover}
+button{
+  border:0;
+  border-radius:30px;
+  padding:15px 24px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:7px;
+}
+.primary{
+  color:white;
+  background:linear-gradient(90deg,#7e22ce,#c026d3);
+  box-shadow:0 0 20px #a855f744;
+}
+.secondary{
+  color:white;
+  background:#21182b;
+  border:1px solid #65417a;
+}
+button:active{transform:scale(.97)}
+.status{color:#c4b5fd;margin:18px 0}
+footer{color:#8e8498;padding:25px;text-align:center}
+@media(max-width:600px){
+ header{padding:18px}
+ main{padding:45px 16px}
+ .card{padding:16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Z<span class="badge">UVO</span></div>
+  <div>MEET • CONNECT • DISCOVER</div>
+</header>
+
+<main>
+  <p class="badge">YOUR WORLD. YOUR CONNECTIONS.</p>
+  <h1>Meet Strangers.<br><span>Make Connections.</span></h1>
+  <p class="subtitle">
+    Meet new people from around the world.<br>
+    Every conversation starts with a hello.
+  </p>
+
+  <section class="card">
+    <h2>🌍 Welcome to ZUVO</h2>
+    <div class="video-box" id="preview">
+      Your camera preview will appear here.
+    </div>
+    <p class="status" id="status">Ready when you are!</p>
+    <button class="primary" id="start">🎥 Start Camera</button>
+    <button class="secondary" id="stop">✕ Stop Camera</button>
+    <p class="subtitle" style="font-size:13px">
+      Camera access requires your permission.
+    </p>
+  </section>
+
+  <h2>One World. <span class="badge">Millions of Connections.</span></h2>
+  <p class="subtitle">
+    Simple. Modern. Made for meeting people.
+  </p>
+</main>
+
+<footer>© 2026 ZUVO · Connect responsibly.</footer>
+
+<script>
+let stream;
+
+const preview = document.getElementById("preview");
+const statusText = document.getElementById("status");
+
+document.getElementById("start").onclick = async () => {
+  if (!navigator.mediaDevices?.getUserMedia) {
+    statusText.textContent =
+      "Camera access needs a supported secure website.";
+    return;
+  }
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    });
+
+    preview.innerHTML = "";
+    const video = document.createElement("video");
+    video.autoplay = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.srcObject = stream;
+    preview.appendChild(video);
+
+    statusText.textContent =
+      "Camera connected! Random matching is our next step.";
+  } catch (error) {
+    statusText.textContent =
+      "Camera permission denied or unavailable. Please check browser permissions.";
+  }
+};
+
+document.getElementById("stop").onclick = () => {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
+
+  preview.textContent = "Your camera preview will appear here.";
+  statusText.textContent = "Camera stopped.";
+};
+</script>
+</body>
+</html>
